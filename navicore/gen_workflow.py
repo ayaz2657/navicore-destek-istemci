@@ -23,6 +23,22 @@ assert "inputs." not in win
 anchor = "      - name: Checkout source code\n        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4\n        with:\n          submodules: recursive\n"
 assert win.count(anchor) == 1, "checkout adimi degismis"
 win = win.replace(anchor, anchor + "\n      - name: NaviCore branding\n        shell: bash\n        run: bash navicore/brand.sh\n")
+# Ana exe'yi uygulama adiyla paketle: ilk kurulum (install_me) klasoru XCOPY ile kopyalar ve yeniden adlandirmaz,
+# servis/kisayollar ise {APP_NAME}.exe bekler (windows.rs install_me / rename_exe_cmd yalniz guncellemede).
+pk = "      - name: Build self-extracted executable\n"
+assert win.count(pk) == 1, "packer adimi degismis"
+win = win.replace(pk, """      - name: NaviCore exe adi (APP_NAME.exe)
+        shell: bash
+        run: |
+          APP=$(grep -E '^APP_NAME=' navicore/brand.env | cut -d= -f2)
+          [ -f ./rustdesk/rustdesk.exe ] || { echo "rustdesk.exe yok"; exit 1; }
+          mv ./rustdesk/rustdesk.exe "./rustdesk/$APP.exe"
+          echo "NAVICORE_EXE=$APP.exe" >> "$GITHUB_ENV"
+
+""" + pk)
+old_e = "python3 ./generate.py -f ../../rustdesk/ -o . -e ../../rustdesk/rustdesk.exe"
+assert win.count(old_e) == 1, "generate.py -e degismis"
+win = win.replace(old_e, 'python3 ./generate.py -f ../../rustdesk/ -o . -e "../../rustdesk/${{ env.NAVICORE_EXE }}"')
 head = open("navicore/workflow_head.yml", encoding="utf-8").read()
 tail = open("navicore/workflow_tail.yml", encoding="utf-8").read()
 open(W + "navicore-windows.yml", "w", encoding="utf-8").write(head + env + "\n" + tail.split("#--WIN--\n")[0] + win.rstrip("\n") + "\n" + tail.split("#--WIN--\n")[1])

@@ -376,6 +376,14 @@ jobs:
           path: ./packer-template
           if-no-files-found: error
 
+      - name: NaviCore exe adi (APP_NAME.exe)
+        shell: bash
+        run: |
+          APP=$(grep -E '^APP_NAME=' navicore/brand.env | cut -d= -f2)
+          [ -f ./rustdesk/rustdesk.exe ] || { echo "rustdesk.exe yok"; exit 1; }
+          mv ./rustdesk/rustdesk.exe "./rustdesk/$APP.exe"
+          echo "NAVICORE_EXE=$APP.exe" >> "$GITHUB_ENV"
+
       - name: Build self-extracted executable
         shell: bash
         if: env.UPLOAD_ARTIFACT == 'true'
@@ -383,7 +391,7 @@ jobs:
           sed -i '/dpiAware/d' res/manifest.xml
           pushd ./libs/portable
           pip3 install -r requirements.txt
-          python3 ./generate.py -f ../../rustdesk/ -o . -e ../../rustdesk/rustdesk.exe
+          python3 ./generate.py -f ../../rustdesk/ -o . -e "../../rustdesk/${{ env.NAVICORE_EXE }}"
           popd
           mkdir -p ./SignOutput
           mv ./target/release/rustdesk-portable-packer.exe ./SignOutput/rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}.exe
