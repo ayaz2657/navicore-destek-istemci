@@ -36,6 +36,14 @@ rep Cargo.toml '^ProductName = "RustDesk"$'                  "ProductName = \"$P
 rep Cargo.toml '^FileDescription = "RustDesk Remote Desktop"$' "FileDescription = \"$FILE_DESCRIPTION\""
 rep Cargo.toml '^LegalCopyright = ".*"$'                     "LegalCopyright = \"$LEGAL_COPYRIGHT\""
 
+# Yerlesik ayarlar (normalde Pro'nun imzali ayar dosyasi doldurur): musteri sunucu/anahtar/API'yi degistiremez,
+# Kimlik degistirilemez, RustDesk yardim kartlari gizli. Guvenlik ayarlari ACIK (musteri kalici parola belirler).
+rep "$CFG" '^(\s*)pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = Default::default\(\);' \
+    '    pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = RwLock::new(HashMap::from([("hide-server-settings".to_owned(), "Y".to_owned()), ("hide-proxy-settings".to_owned(), "Y".to_owned()), ("hide-websocket-settings".to_owned(), "Y".to_owned()), ("disable-change-id".to_owned(), "Y".to_owned()), ("hide-help-cards".to_owned(), "Y".to_owned())]));'
+
+# Windows mesaj kutusu basligi
+rep src/platform/windows.rs '^    let caption = "RustDesk Output"$' "    let caption = \"$PRODUCT_NAME\""
+
 # Kurulum kabugu (self-extracting packer) dosya bilgileri
 PK=libs/portable/Cargo.toml
 rep "$PK" '^ProductName = "RustDesk"$'                  "ProductName = \"$PRODUCT_NAME\""
