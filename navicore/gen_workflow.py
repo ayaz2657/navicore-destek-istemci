@@ -43,3 +43,20 @@ head = open("navicore/workflow_head.yml", encoding="utf-8").read()
 tail = open("navicore/workflow_tail.yml", encoding="utf-8").read()
 open(W + "navicore-windows.yml", "w", encoding="utf-8").write(head + env + "\n" + tail.split("#--WIN--\n")[0] + win.rstrip("\n") + "\n" + tail.split("#--WIN--\n")[1])
 print("uretildi:", W + "navicore-windows.yml")
+
+# ---- Linux x86_64 deb (navicore-linux.yml) ----
+l_s = idx(lambda l: l.startswith("  build-rustdesk-linux:"))
+l_e = next(i for i in range(l_s, len(src)) if src[i].strip() == "- name: Publish debian/rpm package")
+lnx = "\n".join(src[l_s:l_e]).rstrip() + "\n"
+lnx, n = re.subn(r"\n          - \{\n              arch: aarch64,.*?\n            \}", "", lnx, flags=re.S)
+assert n == 1 and "aarch64-unknown-linux-gnu" not in lnx, "linux aarch64 matrisi degismis"
+# rpm (fedora/suse) paketleme cikarilir: yalniz deb
+r_s = lnx.find("\n            # rpm package\n"); assert r_s > 0, "rpm paketleme blogu bulunamadi"
+lnx = lnx[:r_s].rstrip() + "\n"
+assert "rpmbuild" not in lnx and "inputs." not in lnx
+assert lnx.count(anchor) == 1, "linux checkout adimi degismis"
+lnx = lnx.replace(anchor, anchor + "\n      - name: NaviCore branding\n        shell: bash\n        run: |\n          bash navicore/brand.sh\n          bash navicore/brand-linux.sh\n")
+lh = open("navicore/workflow_head_linux.yml", encoding="utf-8").read()
+lt = open("navicore/workflow_tail_linux.yml", encoding="utf-8").read().split("#--LNX--\n")
+open(W + "navicore-linux.yml", "w", encoding="utf-8").write(lh + env + "\n" + lt[0] + lnx.rstrip("\n") + "\n" + lt[1])
+print("uretildi:", W + "navicore-linux.yml")

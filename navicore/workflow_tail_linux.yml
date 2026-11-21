@@ -1,0 +1,34 @@
+jobs:
+  generate-bridge:
+    uses: ./.github/workflows/bridge.yml
+
+#--LNX--
+
+      - name: NaviCore deb paketi (navicore-destek)
+        shell: bash
+        run: |
+          IN="rustdesk-${{ env.VERSION }}-x86_64.deb"
+          [ -f "$IN" ] || { echo "$IN yok"; ls -la; exit 1; }
+          mkdir -p NaviCoreOutput
+          sudo bash navicore/linux_repack.sh "$IN" "NaviCoreOutput/NaviCore-Destek-${{ env.VERSION }}-x86_64.deb"
+          sudo chown -R "$(id -u):$(id -g)" NaviCoreOutput
+          (cd NaviCoreOutput && sha256sum *.deb | tee SHA256SUMS.txt)
+
+      - name: Upload NaviCore deb
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: NaviCore-Destek-${{ env.VERSION }}-x86_64-deb
+          path: ./NaviCoreOutput
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish GitHub Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="navicore-linux-${{ env.VERSION }}-r${{ github.run_number }}"
+          gh release create "$TAG" ./NaviCoreOutput/*.deb ./NaviCoreOutput/SHA256SUMS.txt \
+            --repo "${{ github.repository }}" --target "${{ github.sha }}" \
+            --title "NaviCore Destek Linux ${{ env.VERSION }} (derleme ${{ github.run_number }})" \
+            --notes "RustDesk ${{ env.VERSION }} tabanli NaviCore Destek Linux istemcisi (Debian/Ubuntu x86_64, paket adi navicore-destek; AGPL-3.0, kaynak bu repoda)."

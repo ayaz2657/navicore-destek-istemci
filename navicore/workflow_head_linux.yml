@@ -1,0 +1,21 @@
+# NaviCore Destek -- yalniz Linux x86_64 .deb istemci derlemesi (upstream flutter-build.yml'den uretildi)
+# Uretim: navicore/gen_workflow.py (upstream guncellenince yeniden uretilir).
+# Fark: yalniz x86_64 deb (rpm/arch/aarch64 yok), "NaviCore branding" + brand-linux.sh, paket navicore-destek
+# (navicore/linux_repack.sh), cikti NaviCore-Destek-<surum>-x86_64.deb
+name: NaviCore Destek Linux
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "navicore-*"
+    paths-ignore:
+      - "**.md"
+
+permissions:
+  contents: write   # NaviCore Release (deb'in herkese acik indirilebilmesi)
+
+concurrency:
+  group: navicore-linux-${{ github.ref }}
+  cancel-in-progress: true
+
