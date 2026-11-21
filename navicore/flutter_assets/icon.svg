@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="NaviCore">
+  <title>NaviCore — pusula iğnesi N harfinin diyagonalidir</title>
+  <defs>
+    <linearGradient id="n" x1="1" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#2563eb"/><stop offset="1" stop-color="#22d3ee"/>
+    </linearGradient>
+    <clipPath id="card"><rect width="256" height="256" rx="14"/></clipPath>
+  </defs>
+
+  <g clip-path="url(#card)"><rect width="256" height="256" fill="#ffffff"/></g>
+
+  <!-- Odoo app ikonuyla (navicore_ai_assistant/static/description/favicon.png) birebir
+       aynı işaret. Kart boşluğu dar tutuldu: 16 px'te "çember içinde N" olarak okunur.
+       Bar kalınlığı 18 → iğne açısı 30,26° → kadran -30,3° döner. -->
+  <g transform="translate(4 4) scale(1.24)">
+    <g transform="rotate(-30.3 100 100)">
+      <circle cx="100" cy="100" r="92" fill="none" stroke="#12324f" stroke-width="6"/>
+      <rect x="95.5" y="1" width="9" height="18" rx="2.5" fill="url(#n)"/>
+      <rect x="97.5" y="181" width="5" height="18" rx="2" fill="#12324f"/>
+      <rect x="1" y="97.5" width="18" height="5" rx="2" fill="#12324f"/>
+      <rect x="181" y="97.5" width="18" height="5" rx="2" fill="#12324f"/>
+      <g stroke="#8ba3bd" stroke-width="3.4" stroke-linecap="round">
+        <line x1="152.4" y1="35.6" x2="146.5" y2="41.5"/>
+        <line x1="47.6" y1="35.6" x2="53.5" y2="41.5"/>
+        <line x1="152.4" y1="164.4" x2="146.5" y2="158.5"/>
+        <line x1="47.6" y1="164.4" x2="53.5" y2="158.5"/>
+      </g>
+    </g>
+
+    <g fill="#0b1727">
+      <rect x="54" y="52" width="18" height="96" rx="3.5"/>
+      <rect x="128" y="52" width="18" height="96" rx="3.5"/>
+    </g>
+    <path d="M72 52 L94.0 103.5 L106.0 96.5 Z" fill="url(#n)"/>
+    <path d="M128 148 L106.0 96.5 L94.0 103.5 Z" fill="#44536b"/>
+    <circle cx="100" cy="100" r="9.5" fill="#ffffff" stroke="#12324f" stroke-width="3.5"/>
+    <circle cx="100" cy="100" r="3.2" fill="#2563eb"/>
+  </g>
+</svg>
