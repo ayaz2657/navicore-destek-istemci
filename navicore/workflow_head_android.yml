@@ -1,0 +1,21 @@
+# NaviCore Destek -- Android APK derlemesi (arm64 + armv7) (upstream flutter-build.yml'den uretildi)
+# Uretim: navicore/gen_workflow.py. Fark: "NaviCore branding" + brand-android.sh (applicationId, ad, sema, simge);
+# x86/x86_64/universal yok; GitHub'da GIZLI ANAHTAR YOK -> APK CI'nin gecici debug anahtariyla imzali cikar
+# (yalniz TEST). Musteriye giden APK sunucuda kalici NaviCore anahtariyla yeniden imzalanir.
+name: NaviCore Destek Android
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "navicore-*"
+    paths-ignore:
+      - "**.md"
+
+permissions:
+  contents: write   # NaviCore Release
+
+concurrency:
+  group: navicore-android-${{ github.ref }}
+  cancel-in-progress: true
+

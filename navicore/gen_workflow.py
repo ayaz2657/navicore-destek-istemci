@@ -60,3 +60,17 @@ lh = open("navicore/workflow_head_linux.yml", encoding="utf-8").read()
 lt = open("navicore/workflow_tail_linux.yml", encoding="utf-8").read().split("#--LNX--\n")
 open(W + "navicore-linux.yml", "w", encoding="utf-8").write(lh + env + "\n" + lt[0] + lnx.rstrip("\n") + "\n" + lt[1])
 print("uretildi:", W + "navicore-linux.yml")
+
+# ---- Android APK arm64 + armv7 (navicore-android.yml) ----
+a_s = idx(lambda l: l.startswith("  build-rustdesk-android:"))
+a_e = next(i for i in range(a_s, len(src)) if src[i].strip().startswith("# https://github.com/r0adkll/sign-android-release"))
+andr = "\n".join(src[a_s:a_e]).rstrip() + "\n"
+andr, n = re.subn(r"\n          - \{\n              arch: x86_64,.*?\n            \}", "", andr, flags=re.S)
+assert n == 1 and "x86_64-linux-android," not in andr, "android x86_64 matrisi degismis"
+assert "arch: aarch64" in andr and "arch: armv7" in andr and "inputs." not in andr
+assert andr.count(anchor) == 1, "android checkout adimi degismis"
+andr = andr.replace(anchor, anchor + "\n      - name: NaviCore branding\n        shell: bash\n        run: |\n          bash navicore/brand.sh\n          bash navicore/brand-android.sh\n")
+ah = open("navicore/workflow_head_android.yml", encoding="utf-8").read()
+at = open("navicore/workflow_tail_android.yml", encoding="utf-8").read().split("#--AND--\n")
+open(W + "navicore-android.yml", "w", encoding="utf-8").write(ah + env + "\n" + at[0] + andr.rstrip("\n") + "\n" + at[1])
+print("uretildi:", W + "navicore-android.yml")
