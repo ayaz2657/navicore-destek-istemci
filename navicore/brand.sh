@@ -36,6 +36,16 @@ rep Cargo.toml '^ProductName = "RustDesk"$'                  "ProductName = \"$P
 rep Cargo.toml '^FileDescription = "RustDesk Remote Desktop"$' "FileDescription = \"$FILE_DESCRIPTION\""
 rep Cargo.toml '^LegalCopyright = ".*"$'                     "LegalCopyright = \"$LEGAL_COPYRIGHT\""
 
+# Kurulum kabugu (self-extracting packer) dosya bilgileri
+PK=libs/portable/Cargo.toml
+rep "$PK" '^ProductName = "RustDesk"$'                  "ProductName = \"$PRODUCT_NAME\""
+rep "$PK" '^FileDescription = "RustDesk Remote Desktop"$' "FileDescription = \"$FILE_DESCRIPTION\""
+rep "$PK" '^LegalCopyright = ".*"$'                     "LegalCopyright = \"$LEGAL_COPYRIGHT\""
+
+# Ana sayfadaki "Powered by RustDesk" baglantisi gizlenir (lisans/atif "Hakkinda" sayfasinda kalir)
+rep flutter/lib/common.dart '^  if \(bind\.mainGetBuildinOption\(key: "hide-powered-by-me"\) == .Y.\) \{$' \
+    "  if (true) { // NaviCore: powered-by gizli (atif Hakkinda sayfasinda)"
+
 RC=flutter/windows/runner/Runner.rc
 rep "$RC" 'VALUE "CompanyName", "[^"]*"'     "VALUE \"CompanyName\", \"$COMPANY_NAME\""
 rep "$RC" 'VALUE "FileDescription", "[^"]*"' "VALUE \"FileDescription\", \"$FILE_DESCRIPTION\""
@@ -46,4 +56,6 @@ rep "$RC" 'VALUE "ProductName", "[^"]*"'     "VALUE \"ProductName\", \"$PRODUCT_
 for f in navicore/res/*; do [[ -f "res/$(basename "$f")" ]] || { echo "brand.sh: res/$(basename "$f") upstream'de yok"; exit 1; }; cp "$f" res/; done
 cp navicore/win/app_icon.ico flutter/windows/runner/resources/app_icon.ico
 cp navicore/flutter_assets/icon.svg flutter/assets/icon.svg
+# Ana sayfa logosu (common.dart _Logo: assets/logo.png, koyu temada logo_dark.png; en fazla 300x60)
+cp navicore/flutter_assets/logo.png navicore/flutter_assets/logo_dark.png flutter/assets/
 echo "NaviCore markalamasi uygulandi: APP_NAME=$APP_NAME, sunucu=$RENDEZVOUS_SERVER"
