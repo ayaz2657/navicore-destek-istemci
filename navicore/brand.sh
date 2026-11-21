@@ -29,6 +29,9 @@ rep "$CFG" '^pub const RENDEZVOUS_SERVERS: &\[&str\] = &\[[^\]]*\];' \
 rep "$CFG" '^pub const RS_PUB_KEY: &str = "[^"]*";' \
     "pub const RS_PUB_KEY: &str = \"$RS_PUB_KEY\";"
 
+# API (adres defteri/giris/heartbeat): ozel sunucu yokken varsayilan admin.rustdesk.com -> bizim API (src/common.rs get_api_server_)
+rep src/common.rs '^    "https://admin\.rustdesk\.com"\.to_owned\(\)$' "    \"$API_SERVER\".to_owned()"
+
 rep Cargo.toml '^ProductName = "RustDesk"$'                  "ProductName = \"$PRODUCT_NAME\""
 rep Cargo.toml '^FileDescription = "RustDesk Remote Desktop"$' "FileDescription = \"$FILE_DESCRIPTION\""
 rep Cargo.toml '^LegalCopyright = ".*"$'                     "LegalCopyright = \"$LEGAL_COPYRIGHT\""

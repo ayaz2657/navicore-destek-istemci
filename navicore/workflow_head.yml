@@ -11,6 +11,9 @@ on:
     paths-ignore:
       - "**.md"
 
+permissions:
+  contents: write   # NaviCore Release (exe'nin herkese acik indirilebilmesi)
+
 concurrency:
   group: navicore-windows-${{ github.ref }}
   cancel-in-progress: true

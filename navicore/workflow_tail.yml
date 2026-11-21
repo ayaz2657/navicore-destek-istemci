@@ -26,3 +26,14 @@ jobs:
           path: ./SignOutput
           if-no-files-found: error
           retention-days: 30
+
+      - name: Publish GitHub Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="navicore-${{ env.VERSION }}-r${{ github.run_number }}"
+          gh release create "$TAG" ./SignOutput/*.exe ./SignOutput/SHA256SUMS.txt \
+            --repo "${{ github.repository }}" --target "${{ github.sha }}" \
+            --title "NaviCore Destek ${{ env.VERSION }} (derleme ${{ github.run_number }})" \
+            --notes "RustDesk ${{ env.VERSION }} tabanli NaviCore Destek istemcisi (AGPL-3.0, kaynak bu repoda). Imzasizdir."
