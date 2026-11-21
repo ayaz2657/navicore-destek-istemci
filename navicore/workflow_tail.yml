@@ -1,0 +1,28 @@
+jobs:
+  generate-bridge:
+    uses: ./.github/workflows/bridge.yml
+
+  build-RustDeskTempTopMostWindow:
+    uses: ./.github/workflows/third-party-RustDeskTempTopMostWindow.yml
+    with:
+      upload-artifact: true
+      target: windows-2022
+      configuration: Release
+      platform: x64
+      target_version: Windows10
+
+#--WIN--
+
+      - name: Rename installer
+        shell: bash
+        run: |
+          mv "./SignOutput/rustdesk-${{ env.VERSION }}-x86_64.exe" "./SignOutput/NaviCore-Destek-${{ env.VERSION }}-Kurulum.exe"
+          sha256sum ./SignOutput/*.exe | tee ./SignOutput/SHA256SUMS.txt
+
+      - name: Upload NaviCore installer
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: NaviCore-Destek-${{ env.VERSION }}-Kurulum
+          path: ./SignOutput
+          if-no-files-found: error
+          retention-days: 30

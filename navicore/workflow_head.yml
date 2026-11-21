@@ -1,0 +1,17 @@
+# NaviCore Destek -- yalniz Windows x64 istemci derlemesi (upstream flutter-build.yml'den uretildi)
+# Uretim: navicore/gen_workflow.py (upstream guncellenince yeniden uretilir).
+# Fark: yalniz Windows x64, "NaviCore branding" adimi, imza/MSI yok, cikti NaviCore-Destek-<surum>-Kurulum.exe
+name: NaviCore Destek Windows
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "navicore-*"
+    paths-ignore:
+      - "**.md"
+
+concurrency:
+  group: navicore-windows-${{ github.ref }}
+  cancel-in-progress: true
+
